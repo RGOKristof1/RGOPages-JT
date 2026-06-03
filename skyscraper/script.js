@@ -1,8 +1,11 @@
 function randomBetween(min, max) {
     return Math.floor(Math.random() * (max + 1 - min) + min);
 }
-function generateHintMap(gridSize) {
-
+function generateHintMap(gridSize,solutionMap) {
+    for (let i2 = 0; i2 < 16; i2++) {
+        document.getElementsByClassName(`id${i2}`)[0].innerHTML = `cig${i2}`
+    
+    }
 }
 function generateRandomMap(gridSize) {
     gridSize -= 2
@@ -47,23 +50,31 @@ function generateRandomMap(gridSize) {
         }
     }
 
-    generateHintMap(gridSize);
+    generateHintMap(gridSize,solutionMap);
 }
 
 function generateGrid(gridSize) {
     gridSize += 2
     document.getElementById("playGround").innerHTML = ""
     document.getElementById("playGround").style.gridTemplateColumns = `repeat(${gridSize}, 1fr)`
+    let currentArrowIdDown = 0
+    let currentArrowIdRight = 4
+    let currentArrowIdLeft = 8
+    let currentArrowIdUp = 12
     for (let i = 0; i < gridSize; i++) {
         for (let i2 = 0; i2 < gridSize; i2++) {
             if (i == 0 && i2 != 0 && i2 != gridSize - 1) {
-                document.getElementById("playGround").innerHTML += `<div class="${i}r ${i2}c arrowDown">${i}r ${i2}c</div>`
+                document.getElementById("playGround").innerHTML += `<div class="${i}r ${i2}c arrowDown id${currentArrowIdDown}">${currentArrowIdDown}</div>`
+                currentArrowIdDown++
             } else if (i2 == 0 && i != 0 && i != gridSize - 1) {
-                document.getElementById("playGround").innerHTML += `<div class="${i}r ${i2}c arrowRight">${i}r ${i2}c</div>`
+                document.getElementById("playGround").innerHTML += `<div class="${i}r ${i2}c arrowRight id${currentArrowIdRight}">${currentArrowIdRight}</div>`
+                currentArrowIdRight++
             } else if (i2 == gridSize - 1 && i != 0 && i != gridSize - 1) {
-                document.getElementById("playGround").innerHTML += `<div class="${i}r ${i2}c arrowLeft">${i}r ${i2}c</div>`
+                document.getElementById("playGround").innerHTML += `<div class="${i}r ${i2}c arrowLeft id${currentArrowIdLeft}">${currentArrowIdLeft}</div>`
+                currentArrowIdLeft++
             } else if (i == gridSize - 1 && i2 != 0 && i2 != gridSize - 1) {
-                document.getElementById("playGround").innerHTML += `<div class="${i}r ${i2}c arrowUp">${i}r ${i2}c</div>`
+                document.getElementById("playGround").innerHTML += `<div class="${i}r ${i2}c arrowUp id${currentArrowIdUp}">${currentArrowIdUp}</div>`
+                currentArrowIdUp++
             } else if (i == 0 && i2 == 0 || i == 0 && i2 == gridSize - 1 || i == gridSize - 1 && i2 == 0 || i == gridSize - 1 && i2 == gridSize - 1) {
                 document.getElementById("playGround").innerHTML += `<div class="${i}r ${i2}c corner"></div>`
             } else {
