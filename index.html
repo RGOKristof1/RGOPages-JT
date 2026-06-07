@@ -1,23 +1,585 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TO DO LIST</title>
-    <link rel="stylesheet" href="index-source/style.css">
-    
-</head>
-<body>
-    <div id="content">
-        <input id="item" type="text">
-        <button class="btn btn-success" id="additem" >Add Item</button>
-        <ul id="list">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JT - Main</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap');
+    *{
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      color: #006ec9;
+    }
+    html{
+      height: 100%;
+      font-size: clamp(15px, 2vw, 40px);
+    }
+    body{
+      background-color: black;
+      overflow: hidden;
+    }
+    #top-shadow{
+      z-index: 4;
+      position: fixed;
+      top: 0;
+      background: linear-gradient(0deg, rgba(0, 0, 0, 0) 0%, #000000 100%);
+      width: 100%;
+      height: 5rem;
 
-        </ul>
+    }
+    header{
+      z-index: 5;
+      position: sticky;
+      top: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: rgba(0, 0, 0, 0.5);
+      border-radius: .5rem;
+      margin: 1rem;
+      height: 3rem;
+
+      font-family: "Black Ops One", system-ui;
+      font-weight: 400;
+      font-style: normal;
+    }
+    #logo{
+      height: 100%;
+      width: auto;
+    }
+    h1{
+      font-size: 1.4rem;
+      color: white;
+      text-shadow: white 0 0 100px;
+    }
+    #menu{
+      height: 100%;
+      width: auto;
+    }
+    #loading-cover{
+      z-index: 10;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: black;
+    }
+    #loading-logo{
+      height: 10rem;
+      width: auto;
+    }
+    .hidden{
+      opacity: 0%;
+      transition: opacity 1s;
+    }
+    .show{
+      opacity: 100%;
+      transition: opacity 3s;
+    }
+
+    /* ===================== MAIN — AI GENERATED FILL ===================== */
+
+    /* AI badge stamp shown on section level */
+    .ai-badge {
+      display: inline-block;
+      font-family: "Black Ops One", system-ui;
+      font-size: 0.45rem;
+      letter-spacing: 0.15em;
+      color: #006ec9;
+      border: 2px solid #006ec9;
+      padding: 0.15rem 0.5rem;
+      text-transform: uppercase;
+      opacity: 0.6;
+      margin-bottom: 1.2rem;
+      transform: rotate(-1.5deg);
+    }
+
+    /* ---- HERO ---- */
+    #hero {
+      padding: 3rem 1.5rem 2rem;
+      border-bottom: 3px solid #006ec9;
+      position: relative;
+      overflow: hidden;
+    }
+    #hero::before {
+      content: '';
+      position: absolute;
+      top: -40%;
+      right: -10%;
+      width: 45rem;
+      height: 45rem;
+      border-radius: 50%;
+      border: 1px solid rgba(0, 110, 201, 0.08);
+      pointer-events: none;
+    }
+    #hero::after {
+      content: '';
+      position: absolute;
+      top: -20%;
+      right: 5%;
+      width: 30rem;
+      height: 30rem;
+      border-radius: 50%;
+      border: 1px solid rgba(0, 110, 201, 0.05);
+      pointer-events: none;
+    }
+
+    .hero-tag {
+      font-family: "Black Ops One", system-ui;
+      font-size: 0.5rem;
+      letter-spacing: 0.3em;
+      color: rgba(0, 110, 201, 0.5);
+      text-transform: uppercase;
+      margin-bottom: 0.6rem;
+    }
+    .hero-headline {
+      font-family: "Black Ops One", system-ui;
+      font-size: clamp(2.5rem, 8vw, 5.5rem);
+      line-height: 0.95;
+      color: white;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+    .hero-headline span {
+      color: #006ec9;
+      display: block;
+    }
+    .hero-sub {
+      font-family: "Courier New", monospace;
+      font-size: 0.55rem;
+      color: rgba(255,255,255,0.35);
+      max-width: 30rem;
+      line-height: 1.6;
+      margin-bottom: 1.8rem;
+      letter-spacing: 0.04em;
+    }
+    .hero-cta-row {
+      display: flex;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .btn-primary {
+      font-family: "Black Ops One", system-ui;
+      font-size: 0.55rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.6rem 1.4rem;
+      background: #006ec9;
+      color: black;
+      border: none;
+      cursor: pointer;
+      clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+      transition: background 0.15s, color 0.15s;
+    }
+    .btn-primary:hover {
+      background: white;
+    }
+    .btn-ghost {
+      font-family: "Black Ops One", system-ui;
+      font-size: 0.55rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.58rem 1.2rem;
+      background: transparent;
+      color: #006ec9;
+      border: 2px solid #006ec9;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+    .btn-ghost:hover {
+      background: #006ec9;
+      color: black;
+    }
+
+    /* ---- TICKER ---- */
+    #ticker {
+      overflow: hidden;
+      background: #006ec9;
+      padding: 0.35rem 0;
+      white-space: nowrap;
+      border-bottom: 1px solid rgba(0,110,201,0.4);
+    }
+    .ticker-track {
+      display: inline-block;
+      animation: tickerScroll 18s linear infinite;
+    }
+    .ticker-track span {
+      font-family: "Black Ops One", system-ui;
+      font-size: 0.5rem;
+      color: black;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 0 2rem;
+    }
+    .ticker-track span::after {
+      content: '◆';
+      padding-left: 2rem;
+    }
+    @keyframes tickerScroll {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* ---- SERVICES ---- */
+    #services {
+      padding: 2.5rem 1.5rem;
+      border-bottom: 3px solid #006ec9;
+    }
+    .section-label {
+      font-family: "Black Ops One", system-ui;
+      font-size: 0.45rem;
+      letter-spacing: 0.3em;
+      color: rgba(0,110,201,0.5);
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+      gap: 2px;
+      background: #006ec9;
+      border: 2px solid #006ec9;
+    }
+    .service-card {
+      background: black;
+      padding: 1.2rem 1rem;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.2s;
+      cursor: default;
+    }
+    .service-card:hover {
+      background: #00101f;
+    }
+    .service-card:hover .service-icon {
+      color: white;
+    }
+    .service-num {
+      font-family: "Black Ops One", system-ui;
+      font-size: 2.5rem;
+      color: rgba(0,110,201,0.08);
+      line-height: 1;
+      position: absolute;
+      top: 0.5rem;
+      right: 0.8rem;
+      user-select: none;
+    }
+    .service-icon {
+      font-size: 1.2rem;
+      margin-bottom: 0.6rem;
+      display: block;
+      color: #006ec9;
+      transition: color 0.2s;
+    }
+    .service-title {
+      font-family: "Black Ops One", system-ui;
+      font-size: 0.65rem;
+      color: white;
+      text-transform: uppercase;
+      margin-bottom: 0.4rem;
+    }
+    .service-desc {
+      font-family: "Courier New", monospace;
+      font-size: 0.42rem;
+      color: rgba(255,255,255,0.3);
+      line-height: 1.6;
+    }
+
+    /* ---- STATS ---- */
+    #stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-bottom: 3px solid #006ec9;
+    }
+    @media (max-width: 600px) {
+      #stats { grid-template-columns: repeat(2, 1fr); }
+    }
+    .stat-block {
+      padding: 1.5rem 1rem;
+      border-right: 1px solid rgba(0,110,201,0.25);
+      text-align: center;
+    }
+    .stat-block:last-child { border-right: none; }
+    .stat-num {
+      font-family: "Black Ops One", system-ui;
+      font-size: 2rem;
+      color: #006ec9;
+      display: block;
+      line-height: 1;
+    }
+    .stat-label {
+      font-family: "Courier New", monospace;
+      font-size: 0.4rem;
+      color: rgba(255,255,255,0.3);
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      margin-top: 0.4rem;
+      display: block;
+    }
+
+    /* ---- ABOUT STRIP ---- */
+    #about {
+      padding: 2.5rem 1.5rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      border-bottom: 3px solid #006ec9;
+      align-items: center;
+    }
+    @media (max-width: 700px) {
+      #about { grid-template-columns: 1fr; gap: 1.5rem; }
+    }
+    .about-heading {
+      font-family: "Black Ops One", system-ui;
+      font-size: 1.4rem;
+      color: white;
+      text-transform: uppercase;
+      line-height: 1;
+    }
+    .about-heading em {
+      font-style: normal;
+      color: #006ec9;
+    }
+    .about-body {
+      font-family: "Courier New", monospace;
+      font-size: 0.45rem;
+      color: rgba(255,255,255,0.35);
+      line-height: 1.8;
+    }
+    .about-body p + p { margin-top: 0.8rem; }
+
+    /* ---- CONTACT CTA ---- */
+    #cta {
+      padding: 3rem 1.5rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    #cta::before {
+      content: 'JT';
+      font-family: "Black Ops One", system-ui;
+      font-size: 20rem;
+      color: rgba(0,110,201,0.03);
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      user-select: none;
+      line-height: 1;
+    }
+    .cta-label {
+      font-family: "Black Ops One", system-ui;
+      font-size: 0.45rem;
+      letter-spacing: 0.3em;
+      color: rgba(0,110,201,0.5);
+      text-transform: uppercase;
+      margin-bottom: 0.8rem;
+    }
+    .cta-heading {
+      font-family: "Black Ops One", system-ui;
+      font-size: clamp(1.5rem, 5vw, 3.5rem);
+      color: white;
+      text-transform: uppercase;
+      line-height: 1;
+      margin-bottom: 1.2rem;
+    }
+    .cta-heading span { color: #006ec9; }
+
+    /* ---- AI GENERATED NOTICE ---- */
+    #ai-notice {
+      margin: 1rem 1.5rem 2rem;
+      padding: 0.7rem 1rem;
+      border: 2px dashed rgba(0,110,201,0.4);
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+    }
+    .ai-notice-tag {
+      font-family: "Black Ops One", system-ui;
+      font-size: 0.45rem;
+      background: #006ec9;
+      color: black;
+      padding: 0.15rem 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      white-space: nowrap;
+    }
+    .ai-notice-text {
+      font-family: "Courier New", monospace;
+      font-size: 0.4rem;
+      color: rgba(255,255,255,0.3);
+      letter-spacing: 0.05em;
+    }
+  </style>
+</head>
+<body id="bodey" onload="afterSecoundLoad()">
+  <div id="loading-cover">
+    <img id="loading-logo" class="hidden" src="index-source/JT-Logo.webp" alt="Logo" onload="afterFirstLoad()">
+  </div>
+
+  <div id="top-shadow"></div>
+  <header>
+    <img id="logo" src="index-source/JT-Logo-Blue.png" alt="Logo">
+    <h1>JT SOLUTIONS</h1>
+    <img id="menu" src="index-source/JT-Menu.webp" alt="Menu">
+  </header>
+
+  <main>
+
+    <!-- ░ AI GENERATED CONTENT NOTICE ░ -->
+    <div id="ai-notice">
+      <span class="ai-notice-tag">⚠ AI Generated</span>
+      <span class="ai-notice-text">The content below is placeholder copy generated by AI to demonstrate layout, palette &amp; typographic hierarchy. All other site elements (header, loading screen, logo, colour scheme) are real and final.</span>
     </div>
 
+    <!-- ░░ HERO ░░ -->
+    <section id="hero">
+      <div class="ai-badge">AI Generated Content</div>
+      <p class="hero-tag">Digital Solutions &nbsp;/&nbsp; Web &nbsp;/&nbsp; Systems</p>
+      <h2 class="hero-headline">
+        We Build<br>
+        <span>What Works.</span>
+      </h2>
+      <p class="hero-sub">
+        JT Solutions delivers sharp, reliable digital infrastructure for businesses
+        that refuse to compromise. No bloat. No guesswork. Just results.
+      </p>
+      <div class="hero-cta-row">
+        <button class="btn-primary">Get In Touch</button>
+        <button class="btn-ghost">View Work</button>
+      </div>
+    </section>
 
+    <!-- ░░ TICKER ░░ -->
+    <div id="ticker" aria-hidden="true">
+      <div class="ticker-track">
+        <span>Web Development</span>
+        <span>System Architecture</span>
+        <span>UI / UX Design</span>
+        <span>Database Engineering</span>
+        <span>Digital Strategy</span>
+        <span>Custom Software</span>
+        <span>Web Development</span>
+        <span>System Architecture</span>
+        <span>UI / UX Design</span>
+        <span>Database Engineering</span>
+        <span>Digital Strategy</span>
+        <span>Custom Software</span>
+      </div>
+    </div>
 
-    <script src="index-source/main.js" defer></script>
+    <!-- ░░ SERVICES ░░ -->
+    <section id="services">
+      <div class="ai-badge">AI Generated Content</div>
+      <p class="section-label">// What We Do</p>
+      <div class="services-grid">
+        <div class="service-card">
+          <span class="service-num">01</span>
+          <span class="service-icon">◈</span>
+          <h3 class="service-title">Web Development</h3>
+          <p class="service-desc">Fast, accessible, and built to last. From landing pages to full-scale platforms — we ship production-ready code.</p>
+        </div>
+        <div class="service-card">
+          <span class="service-num">02</span>
+          <span class="service-icon">◉</span>
+          <h3 class="service-title">System Design</h3>
+          <p class="service-desc">Architecture that scales with your business. We design backends that handle load without drama.</p>
+        </div>
+        <div class="service-card">
+          <span class="service-num">03</span>
+          <span class="service-icon">◧</span>
+          <h3 class="service-title">Database Engineering</h3>
+          <p class="service-desc">Structured, indexed, and optimised. Your data deserves more than a dumping ground.</p>
+        </div>
+        <div class="service-card">
+          <span class="service-num">04</span>
+          <span class="service-icon">◫</span>
+          <h3 class="service-title">Digital Strategy</h3>
+          <p class="service-desc">From brief to launch, we help teams move fast without breaking what matters.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ░░ STATS ░░ -->
+    <div id="stats">
+      <div class="stat-block">
+        <span class="stat-num">47+</span>
+        <span class="stat-label">Projects Delivered</span>
+      </div>
+      <div class="stat-block">
+        <span class="stat-num">100%</span>
+        <span class="stat-label">Client Retention</span>
+      </div>
+      <div class="stat-block">
+        <span class="stat-num">5yr</span>
+        <span class="stat-label">In Operation</span>
+      </div>
+      <div class="stat-block">
+        <span class="stat-num">24/7</span>
+        <span class="stat-label">Support</span>
+      </div>
+    </div>
+
+    <!-- ░░ ABOUT ░░ -->
+    <section id="about">
+      <div>
+        <div class="ai-badge">AI Generated Content</div>
+        <h2 class="about-heading">Built on<br><em>Craft &amp;<br>Clarity.</em></h2>
+      </div>
+      <div class="about-body">
+        <p>JT Solutions was founded on one principle: the tools you use should never slow you down. We combine technical depth with an obsession for clean execution — because your product reflects directly on us.</p>
+        <p>We work with startups, agencies, and established businesses who want a partner that speaks plainly, delivers consistently, and treats their project like their own.</p>
+      </div>
+    </section>
+
+    <!-- ░░ CTA ░░ -->
+    <section id="cta">
+      <div class="ai-badge">AI Generated Content</div>
+      <p class="cta-label">// Let's Talk</p>
+      <h2 class="cta-heading">Ready to<br><span>Start Something?</span></h2>
+      <button class="btn-primary">Contact Us</button>
+    </section>
+
+  </main>
+
+  <script>
+    let loaded = false;
+
+    function goToMain() {
+      document.getElementById("loading-logo").classList.replace("show","hidden");
+      setTimeout(function(){
+        document.getElementById("loading-cover").classList.add("hidden");
+        document.getElementById("bodey").style.overflow = "auto"
+      }, 1000);
+    }
+
+    function afterFirstLoad() {
+      setTimeout(function(){
+        document.getElementById("loading-logo").classList.replace("hidden","show");
+
+        setTimeout(function(){
+          if (loaded == true) {
+            goToMain()
+          } else {
+            setTimeout(function(){
+              goToMain()
+            }, 2000);
+          }
+        }, 2000);
+      }, 1000);
+    }
+    function afterSecoundLoad() {
+      loaded = true;
+    }
+  </script>
 </body>
 </html>
