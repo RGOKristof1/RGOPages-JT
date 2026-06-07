@@ -238,6 +238,44 @@
     }
     .cta-heading span{ color: #006ec9; }
   </style>
+  <script>
+    let loaded = false;
+
+    function goToMain() {
+      document.getElementById("loading-logo").classList.replace("show","hidden");
+      setTimeout(function(){
+        document.getElementById("loading-cover").classList.add("hidden");
+        document.getElementById("bodey").style.overflow = "auto"
+      }, 1000);
+    }
+
+    function afterFirstLoad() {
+      setTimeout(function(){
+        document.getElementById("loading-logo").classList.replace("hidden","show");
+
+        setTimeout(function(){
+          if (loaded == true) {
+            goToMain()
+          } else {
+            setTimeout(function(){
+              goToMain()
+            }, 2000);
+          }
+        }, 2000);
+      }, 1000);
+    }
+    function afterSecoundLoad() {
+      loaded = true;
+    }
+
+    function goto(URL) {
+      document.getElementById("bodey").style.overflow = "hidden";
+      document.getElementById("loading-cover").classList.replace("hidden","show");
+      setTimeout(function(){
+        window.location.href = URL;
+      }, 2500);
+    }
+  </script>
 </head>
 <body id="bodey" onload="afterSecoundLoad()">
   <div id="loading-cover">
@@ -409,43 +447,5 @@
  
   </main>
 
-  <script>
-    let loaded = false;
-
-    function goToMain() {
-      document.getElementById("loading-logo").classList.replace("show","hidden");
-      setTimeout(function(){
-        document.getElementById("loading-cover").classList.add("hidden");
-        document.getElementById("bodey").style.overflow = "auto"
-      }, 1000);
-    }
-
-    function afterFirstLoad() {
-      setTimeout(function(){
-        document.getElementById("loading-logo").classList.replace("hidden","show");
-
-        setTimeout(function(){
-          if (loaded == true) {
-            goToMain()
-          } else {
-            setTimeout(function(){
-              goToMain()
-            }, 2000);
-          }
-        }, 2000);
-      }, 1000);
-    }
-    function afterSecoundLoad() {
-      loaded = true;
-    }
-
-    function goto(URL) {
-      document.getElementById("bodey").style.overflow = "hidden";
-      document.getElementById("loading-cover").classList.replace("hidden","show");
-      setTimeout(function(){
-        window.location.href = URL;
-      }, 2500);
-    }
-  </script>
 </body>
 </html>
