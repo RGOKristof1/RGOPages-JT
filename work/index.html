@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JT - Main</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap');
+    *{ margin: 0; padding: 0; box-sizing: border-box; color: #006ec9; }
+    html{ height: 100%; font-size: clamp(15px, 2vw, 40px); }
+    body{ background-color: black; overflow: hidden; }
+ 
+    #top-shadow{
+      z-index: 4; position: fixed; top: 0;
+      background: linear-gradient(0deg, rgba(0,0,0,0) 0%, #000000 100%);
+      width: 100%; height: 5rem;
+    }
+    header{
+      z-index: 5; position: sticky; top: 1rem;
+      display: flex; justify-content: space-between; align-items: center;
+      background-color: rgba(0,0,0,0.5); border-radius: .5rem;
+      margin: 1rem; height: 3rem;
+      font-family: "Black Ops One", system-ui; font-weight: 400; font-style: normal;
+    }
+    #logo{ height: 100%; width: auto; }
+    h1{ font-size: 1.4rem; color: white; text-shadow: rgba(255,255,255,0.1) 0 0 100px; }
+    #menu{ height: 100%; width: auto; }
+ 
+    header nav{
+      display: flex; gap: 1.2rem; align-items: center;
+    }
+    header nav a{
+      font-family: "Black Ops One", system-ui; font-size: 0.42rem;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: rgba(0,110,201,0.45); text-decoration: none;
+      transition: color 0.15s; padding: 0.2rem 0;
+    }
+    header nav a:hover{ color: #006ec9; }
+    header nav a.active{ color: #006ec9; border-bottom: 1px solid #006ec9; }
+ 
+    #loading-cover{
+      z-index: 10; display: flex; justify-content: center; align-items: center;
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background-color: black;
+    }
+    #loading-logo{ height: 10rem; width: auto; }
+    .hidden{ opacity: 0%; transition: opacity 1s; pointer-events: none; }
+    .show{ opacity: 100%; transition: opacity 3s; }
+ 
+    .btn-primary{
+      font-family: "Black Ops One", system-ui; font-size: 0.55rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 0.6rem 1.4rem; background: #006ec9; color: black;
+      border: none; cursor: pointer;
+      clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+      transition: background 0.15s, color 0.15s;
+    }
+    .btn-primary:hover{ background: white; }
+    .btn-ghost{
+      font-family: "Black Ops One", system-ui; font-size: 0.55rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 0.58rem 1.2rem; background: transparent; color: #006ec9;
+      border: 2px solid #006ec9; cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+    .btn-ghost:hover{ background: #006ec9; color: black; }
+ 
+    /* ---- HERO ---- */
+    #hero{
+      padding: 3rem 1.5rem 2rem; border-bottom: 3px solid #006ec9;
+      position: relative; overflow: hidden;
+    }
+    #hero::before{
+      content: ''; position: absolute; top: -40%; right: -10%;
+      width: 45rem; height: 45rem; border-radius: 50%;
+      border: 1px solid rgba(0,110,201,0.08); pointer-events: none;
+    }
+    #hero::after{
+      content: ''; position: absolute; top: -20%; right: 5%;
+      width: 30rem; height: 30rem; border-radius: 50%;
+      border: 1px solid rgba(0,110,201,0.05); pointer-events: none;
+    }
+    .hero-tag{
+      font-family: "Black Ops One", system-ui; font-size: 0.5rem;
+      letter-spacing: 0.3em; color: rgba(0,110,201,0.5);
+      text-transform: uppercase; margin-bottom: 0.6rem;
+    }
+    .hero-headline{
+      font-family: "Black Ops One", system-ui;
+      font-size: clamp(2.5rem, 8vw, 5.5rem); line-height: 0.95;
+      color: white; text-transform: uppercase; margin-bottom: 0.5rem;
+    }
+    .hero-headline span{ color: #006ec9; display: block; }
+    .hero-sub{
+      font-family: "Courier New", monospace; font-size: 0.55rem;
+      color: rgba(255,255,255,0.35); max-width: 30rem; line-height: 1.6;
+      margin-bottom: 1.8rem; letter-spacing: 0.04em;
+    }
+    .hero-cta-row{ display: flex; gap: 0.8rem; flex-wrap: wrap; align-items: center; }
+ 
+    /* ---- FILTER BAR ---- */
+    #projects-bar{
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0.7rem 1.5rem;
+      border-bottom: 1px solid rgba(0,110,201,0.2);
+    }
+    .projects-count{
+      font-family: "Courier New", monospace; font-size: 0.4rem;
+      color: rgba(0,110,201,0.4); letter-spacing: 0.15em; text-transform: uppercase;
+    }
+    .filter-row{ display: flex; gap: 0.8rem; }
+    .filter-btn{
+      font-family: "Black Ops One", system-ui; font-size: 0.4rem;
+      letter-spacing: 0.15em; text-transform: uppercase; background: none;
+      border: none; border-bottom: 1px solid transparent;
+      color: rgba(0,110,201,0.4); cursor: pointer;
+      transition: color 0.15s, border-color 0.15s; padding: 0.2rem 0;
+    }
+    .filter-btn:hover{ color: #006ec9; }
+    .filter-btn.active{ color: #006ec9; border-bottom-color: #006ec9; }
+ 
+    /* ---- PROJECTS GRID ---- */
+    #projects{
+      padding: 2px; background: rgba(0,110,201,0.12);
+      border-bottom: 3px solid #006ec9;
+    }
+    .projects-grid{
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px;
+    }
+    @media (max-width: 900px){ .projects-grid{ grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 580px){ .projects-grid{ grid-template-columns: 1fr; } }
+ 
+    .project-card{
+      background: black; padding: 1.5rem 1.2rem;
+      position: relative; overflow: hidden;
+      transition: background 0.2s; cursor: default;
+      min-height: 11rem;
+    }
+    .project-card.featured{ grid-column: span 2; min-height: 14rem; }
+    @media (max-width: 580px){ .project-card.featured{ grid-column: span 1; } }
+    .project-card:hover{ background: #00101f; }
+    .project-card.hidden-card{ display: none; }
+ 
+    .project-num{
+      font-family: "Black Ops One", system-ui; font-size: 3.5rem;
+      color: rgba(0,110,201,0.05); line-height: 1;
+      position: absolute; bottom: 0.3rem; right: 0.8rem; user-select: none;
+    }
+    .project-cat{
+      font-family: "Courier New", monospace; font-size: 0.38rem;
+      color: rgba(0,110,201,0.5); letter-spacing: 0.2em;
+      text-transform: uppercase; margin-bottom: 0.6rem;
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+    .project-cat::before{
+      content: ''; display: inline-block; width: 1.5rem; height: 1px;
+      background: rgba(0,110,201,0.4); flex-shrink: 0;
+    }
+    .project-title{
+      font-family: "Black Ops One", system-ui; font-size: 0.85rem;
+      color: white; text-transform: uppercase; margin-bottom: 0.5rem; line-height: 1.1;
+    }
+    .project-card.featured .project-title{ font-size: 1.15rem; }
+    .project-desc{
+      font-family: "Courier New", monospace; font-size: 0.4rem;
+      color: rgba(255,255,255,0.3); line-height: 1.6; max-width: 28rem;
+    }
+    .project-tags{ display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.9rem; }
+    .project-tag{
+      font-family: "Black Ops One", system-ui; font-size: 0.35rem;
+      letter-spacing: 0.08em; color: #006ec9;
+      border: 1px solid rgba(0,110,201,0.3); padding: 0.1rem 0.4rem;
+      text-transform: uppercase;
+    }
+    .project-year{
+      font-family: "Courier New", monospace; font-size: 0.38rem;
+      color: rgba(0,110,201,0.3); margin-top: 0.8rem; letter-spacing: 0.1em;
+    }
+ 
+    /* ---- TICKER ---- */
+    #ticker{
+      overflow: hidden; background: #006ec9; padding: 0.35rem 0;
+      white-space: nowrap; border-bottom: 1px solid rgba(0,110,201,0.4);
+    }
+    .ticker-track{ display: inline-block; animation: tickerScroll 22s linear infinite; }
+    .ticker-track span{
+      font-family: "Black Ops One", system-ui; font-size: 0.5rem;
+      color: black; letter-spacing: 0.2em; text-transform: uppercase; padding: 0 2rem;
+    }
+    .ticker-track span::after{ content: '◆'; padding-left: 2rem; }
+    @keyframes tickerScroll{
+      0%{ transform: translateX(0); }
+      100%{ transform: translateX(-50%); }
+    }
+ 
+    /* ---- STATS ---- */
+    #stats{
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      border-bottom: 3px solid #006ec9;
+    }
+    @media (max-width: 600px){ #stats{ grid-template-columns: repeat(2, 1fr); } }
+    .stat-block{
+      padding: 1.5rem 1rem;
+      border-right: 1px solid rgba(0,110,201,0.25); text-align: center;
+    }
+    .stat-block:last-child{ border-right: none; }
+    .stat-num{
+      font-family: "Black Ops One", system-ui; font-size: 2rem;
+      color: #006ec9; display: block; line-height: 1;
+    }
+    .stat-label{
+      font-family: "Courier New", monospace; font-size: 0.4rem;
+      color: rgba(255,255,255,0.3); text-transform: uppercase;
+      letter-spacing: 0.15em; margin-top: 0.4rem; display: block;
+    }
+ 
+    /* ---- CTA ---- */
+    #cta{
+      padding: 3rem 1.5rem; text-align: center;
+      position: relative; overflow: hidden;
+    }
+    #cta::before{
+      content: 'JT'; font-family: "Black Ops One", system-ui;
+      font-size: 20rem; color: rgba(0,110,201,0.03);
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none; user-select: none; line-height: 1;
+    }
+    .cta-label{
+      font-family: "Black Ops One", system-ui; font-size: 0.45rem;
+      letter-spacing: 0.3em; color: rgba(0,110,201,0.5);
+      text-transform: uppercase; margin-bottom: 0.8rem;
+    }
+    .cta-heading{
+      font-family: "Black Ops One", system-ui;
+      font-size: clamp(1.5rem, 5vw, 3.5rem); color: white;
+      text-transform: uppercase; line-height: 1; margin-bottom: 1.2rem;
+    }
+    .cta-heading span{ color: #006ec9; }
+  </style>
+</head>
+<body id="bodey" onload="afterSecoundLoad()">
+  <div id="loading-cover">
+    <img id="loading-logo" class="hidden" src="/index-source/JT-Logo.webp" alt="Logo" onload="afterFirstLoad()">
+  </div>
+
+  <div id="top-shadow"></div>
+  <header>
+    <img id="logo" src="/index-source/JT-Logo-Blue.png" alt="Logo">
+    <h1>JT SOLUTIONS</h1>
+    <img id="menu" src="/index-source/JT-Menu.webp" alt="Menu">
+  </header>
+
+  <main>
+ 
+    <!-- ░░ HERO ░░ -->
+    <section id="hero">
+      <p class="hero-tag">Portfolio &nbsp;/&nbsp; Selected Projects &nbsp;/&nbsp; 2022–2025</p>
+      <h2 class="hero-headline">
+        Work That
+        <span>Proves It.</span>
+      </h2>
+      <p class="hero-sub">
+        Six years of shipping. Real projects, real clients, real results.
+        No case studies padded with filler — just work we're proud of.
+      </p>
+      <div class="hero-cta-row">
+        <button class="btn-primary" onclick="goto('/contact')">Start Your Project</button>
+        <button class="btn-ghost" onclick="goto('/')">Back to Home</button>
+      </div>
+    </section>
+ 
+    <!-- ░░ FILTER BAR ░░ -->
+    <div id="projects-bar">
+      <span class="projects-count">— 06 Projects &nbsp;/&nbsp; 2022–2025</span>
+      <div class="filter-row">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="web">Web</button>
+        <button class="filter-btn" data-filter="systems">Systems</button>
+        <button class="filter-btn" data-filter="data">Data</button>
+      </div>
+    </div>
+ 
+    <!-- ░░ PROJECTS GRID ░░ -->
+    <div id="projects">
+      <div class="projects-grid">
+ 
+        <div class="project-card featured" data-cat="web">
+          <span class="project-num">01</span>
+          <p class="project-cat">Web Development</p>
+          <h3 class="project-title">Nexura Bank</h3>
+          <p class="project-desc">Full rebuild of the customer-facing banking dashboard. Reduced load time by 68%, unified design system across 14 internal tools, and shipped in 8 weeks flat.</p>
+          <div class="project-tags">
+            <span class="project-tag">React</span>
+            <span class="project-tag">Node.js</span>
+            <span class="project-tag">PostgreSQL</span>
+            <span class="project-tag">UI/UX</span>
+          </div>
+          <p class="project-year">2024</p>
+        </div>
+ 
+        <div class="project-card" data-cat="systems">
+          <span class="project-num">02</span>
+          <p class="project-cat">System Design</p>
+          <h3 class="project-title">ArchFlow</h3>
+          <p class="project-desc">Distributed microservices platform for a logistics company. Handles 40K+ daily transactions with zero downtime in production.</p>
+          <div class="project-tags">
+            <span class="project-tag">Docker</span>
+            <span class="project-tag">Go</span>
+            <span class="project-tag">Redis</span>
+          </div>
+          <p class="project-year">2024</p>
+        </div>
+ 
+        <div class="project-card" data-cat="web">
+          <span class="project-num">03</span>
+          <p class="project-cat">Web Development</p>
+          <h3 class="project-title">Lumen CMS</h3>
+          <p class="project-desc">Headless content platform for a media company publishing 200+ articles per week. Custom admin panel, fully API-first architecture.</p>
+          <div class="project-tags">
+            <span class="project-tag">PHP</span>
+            <span class="project-tag">MySQL</span>
+            <span class="project-tag">REST API</span>
+          </div>
+          <p class="project-year">2023</p>
+        </div>
+ 
+        <div class="project-card featured" data-cat="data">
+          <span class="project-num">04</span>
+          <p class="project-cat">Database Engineering</p>
+          <h3 class="project-title">DataForge</h3>
+          <p class="project-desc">Real-time analytics pipeline for a SaaS company. 10M+ events processed daily. Schema redesign cut average query time from 8 seconds to under 200ms across all dashboards.</p>
+          <div class="project-tags">
+            <span class="project-tag">PostgreSQL</span>
+            <span class="project-tag">ClickHouse</span>
+            <span class="project-tag">Python</span>
+            <span class="project-tag">ETL</span>
+          </div>
+          <p class="project-year">2023</p>
+        </div>
+ 
+        <div class="project-card" data-cat="web">
+          <span class="project-num">05</span>
+          <p class="project-cat">Full Stack</p>
+          <h3 class="project-title">VectorPulse</h3>
+          <p class="project-desc">E-commerce platform with custom checkout flow and live inventory management. Launched 3 weeks ahead of schedule.</p>
+          <div class="project-tags">
+            <span class="project-tag">Next.js</span>
+            <span class="project-tag">Stripe</span>
+            <span class="project-tag">SQL</span>
+          </div>
+          <p class="project-year">2022</p>
+        </div>
+ 
+        <div class="project-card" data-cat="systems">
+          <span class="project-num">06</span>
+          <p class="project-cat">System Design / UI</p>
+          <h3 class="project-title">HexCore Ops</h3>
+          <p class="project-desc">Internal operations dashboard for a 50-person engineering team. Real-time status updates, smart task routing, and weekly reporting.</p>
+          <div class="project-tags">
+            <span class="project-tag">Vue.js</span>
+            <span class="project-tag">WebSockets</span>
+            <span class="project-tag">SQL</span>
+          </div>
+          <p class="project-year">2022</p>
+        </div>
+ 
+      </div>
+    </div>
+ 
+    <!-- ░░ TICKER ░░ -->
+    <div id="ticker" aria-hidden="true">
+      <div class="ticker-track">
+        <span>React</span><span>Node.js</span><span>PHP</span><span>SQL</span>
+        <span>PostgreSQL</span><span>Docker</span><span>Vue.js</span><span>Next.js</span>
+        <span>Redis</span><span>Python</span><span>REST APIs</span><span>WebSockets</span>
+        <span>React</span><span>Node.js</span><span>PHP</span><span>SQL</span>
+        <span>PostgreSQL</span><span>Docker</span><span>Vue.js</span><span>Next.js</span>
+        <span>Redis</span><span>Python</span><span>REST APIs</span><span>WebSockets</span>
+      </div>
+    </div>
+ 
+    <!-- ░░ STATS ░░ -->
+    <div id="stats">
+      <div class="stat-block">
+        <span class="stat-num">47+</span>
+        <span class="stat-label">Projects Delivered</span>
+      </div>
+      <div class="stat-block">
+        <span class="stat-num">6</span>
+        <span class="stat-label">Featured Studies</span>
+      </div>
+      <div class="stat-block">
+        <span class="stat-num">12</span>
+        <span class="stat-label">Industries Served</span>
+      </div>
+      <div class="stat-block">
+        <span class="stat-num">0</span>
+        <span class="stat-label">Missed Deadlines</span>
+      </div>
+    </div>
+ 
+    <!-- ░░ CTA ░░ -->
+    <section id="cta">
+      <p class="cta-label">// Next Up</p>
+      <h2 class="cta-heading">Your Project<br><span>Goes Here.</span></h2>
+      <button class="btn-primary" onclick="goto('/contact')">Get In Touch</button>
+    </section>
+ 
+  </main>
+
+  <script>
+    let loaded = false;
+
+    function goToMain() {
+      document.getElementById("loading-logo").classList.replace("show","hidden");
+      setTimeout(function(){
+        document.getElementById("loading-cover").classList.add("hidden");
+        document.getElementById("bodey").style.overflow = "auto"
+      }, 1000);
+    }
+
+    function afterFirstLoad() {
+      setTimeout(function(){
+        document.getElementById("loading-logo").classList.replace("hidden","show");
+
+        setTimeout(function(){
+          if (loaded == true) {
+            goToMain()
+          } else {
+            setTimeout(function(){
+              goToMain()
+            }, 2000);
+          }
+        }, 2000);
+      }, 1000);
+    }
+    function afterSecoundLoad() {
+      loaded = true;
+    }
+
+    function goto(URL) {
+      document.getElementById("bodey").style.overflow = "hidden";
+      document.getElementById("loading-cover").classList.replace("hidden","show");
+      setTimeout(function(){
+        window.location.href = URL;
+      }, 2500);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JT - Main</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap');
+    *{ margin: 0; padding: 0; box-sizing: border-box; color: #006ec9; }
+    html{ height: 100%; font-size: clamp(15px, 2vw, 40px); }
+    body{ background-color: black; overflow: hidden; }
+ 
+    #top-shadow{
+      z-index: 4; position: fixed; top: 0;
+      background: linear-gradient(0deg, rgba(0,0,0,0) 0%, #000000 100%);
+      width: 100%; height: 5rem;
+    }
+    header{
+      z-index: 5; position: sticky; top: 1rem;
+      display: flex; justify-content: space-between; align-items: center;
+      background-color: rgba(0,0,0,0.5); border-radius: .5rem;
+      margin: 1rem; height: 3rem;
+      font-family: "Black Ops One", system-ui; font-weight: 400; font-style: normal;
+    }
+    #logo{ height: 100%; width: auto; }
+    h1{ font-size: 1.4rem; color: white; text-shadow: rgba(255,255,255,0.1) 0 0 100px; }
+    #menu{ height: 100%; width: auto; }
+ 
+    header nav{
+      display: flex; gap: 1.2rem; align-items: center;
+    }
+    header nav a{
+      font-family: "Black Ops One", system-ui; font-size: 0.42rem;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: rgba(0,110,201,0.45); text-decoration: none;
+      transition: color 0.15s; padding: 0.2rem 0;
+    }
+    header nav a:hover{ color: #006ec9; }
+    header nav a.active{ color: #006ec9; border-bottom: 1px solid #006ec9; }
+ 
+    #loading-cover{
+      z-index: 10; display: flex; justify-content: center; align-items: center;
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background-color: black;
+    }
+    #loading-logo{ height: 10rem; width: auto; }
+    .hidden{ opacity: 0%; transition: opacity 1s; pointer-events: none; }
+    .show{ opacity: 100%; transition: opacity 3s; }
+ 
+    .btn-primary{
+      font-family: "Black Ops One", system-ui; font-size: 0.55rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 0.6rem 1.4rem; background: #006ec9; color: black;
+      border: none; cursor: pointer;
+      clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+      transition: background 0.15s, color 0.15s;
+    }
+    .btn-primary:hover{ background: white; }
+    .btn-ghost{
+      font-family: "Black Ops One", system-ui; font-size: 0.55rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 0.58rem 1.2rem; background: transparent; color: #006ec9;
+      border: 2px solid #006ec9; cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+    .btn-ghost:hover{ background: #006ec9; color: black; }
+ 
+    /* ---- HERO ---- */
+    #hero{
+      padding: 3rem 1.5rem 2rem; border-bottom: 3px solid #006ec9;
+      position: relative; overflow: hidden;
+    }
+    #hero::before{
+      content: ''; position: absolute; top: -40%; right: -10%;
+      width: 45rem; height: 45rem; border-radius: 50%;
+      border: 1px solid rgba(0,110,201,0.08); pointer-events: none;
+    }
+    #hero::after{
+      content: ''; position: absolute; top: -20%; right: 5%;
+      width: 30rem; height: 30rem; border-radius: 50%;
+      border: 1px solid rgba(0,110,201,0.05); pointer-events: none;
+    }
+    .hero-tag{
+      font-family: "Black Ops One", system-ui; font-size: 0.5rem;
+      letter-spacing: 0.3em; color: rgba(0,110,201,0.5);
+      text-transform: uppercase; margin-bottom: 0.6rem;
+    }
+    .hero-headline{
+      font-family: "Black Ops One", system-ui;
+      font-size: clamp(2.5rem, 8vw, 5.5rem); line-height: 0.95;
+      color: white; text-transform: uppercase; margin-bottom: 0.5rem;
+    }
+    .hero-headline span{ color: #006ec9; display: block; }
+    .hero-sub{
+      font-family: "Courier New", monospace; font-size: 0.55rem;
+      color: rgba(255,255,255,0.35); max-width: 30rem; line-height: 1.6;
+      margin-bottom: 1.8rem; letter-spacing: 0.04em;
+    }
+    .hero-cta-row{ display: flex; gap: 0.8rem; flex-wrap: wrap; align-items: center; }
+ 
+    /* ---- CONTACT SPLIT ---- */
+    #contact-split{
+      display: grid; grid-template-columns: 1.4fr 1fr;
+      border-bottom: 3px solid #006ec9;
+    }
+    @media (max-width: 750px){ #contact-split{ grid-template-columns: 1fr; } }
+ 
+    /* FORM SIDE */
+    #form-side{
+      padding: 2.5rem 1.5rem;
+      border-right: 1px solid rgba(0,110,201,0.2);
+    }
+    @media (max-width: 750px){ #form-side{ border-right: none; border-bottom: 1px solid rgba(0,110,201,0.2); } }
+    .section-label{
+      font-family: "Black Ops One", system-ui; font-size: 0.45rem;
+      letter-spacing: 0.3em; color: rgba(0,110,201,0.5);
+      text-transform: uppercase; margin-bottom: 1.5rem;
+    }
+ 
+    .form-grid{
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1px;
+      background: rgba(0,110,201,0.15); margin-bottom: 1px;
+    }
+    .form-group{
+      background: black; padding: 0.8rem 1rem; position: relative;
+    }
+    .form-group.full{ grid-column: span 2; }
+    .form-group label{
+      display: block; font-family: "Black Ops One", system-ui;
+      font-size: 0.38rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: rgba(0,110,201,0.5); margin-bottom: 0.4rem;
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea{
+      width: 100%; background: transparent; border: none; outline: none;
+      font-family: "Courier New", monospace; font-size: 0.45rem;
+      color: white; padding: 0.2rem 0;
+      border-bottom: 1px solid rgba(0,110,201,0.2);
+      transition: border-color 0.2s;
+    }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus{
+      border-bottom-color: #006ec9;
+    }
+    .form-group select option{ background: black; color: white; }
+    .form-group textarea{ resize: none; height: 4rem; line-height: 1.6; }
+ 
+    .form-submit{
+      background: rgba(0,110,201,0.08); padding: 1rem;
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 0.8rem;
+    }
+    .form-note{
+      font-family: "Courier New", monospace; font-size: 0.38rem;
+      color: rgba(255,255,255,0.2); letter-spacing: 0.05em;
+    }
+ 
+    /* INFO SIDE */
+    #info-side{ padding: 2.5rem 1.5rem; }
+    .info-block{
+      border: 1px solid rgba(0,110,201,0.2); padding: 1rem;
+      margin-bottom: 1rem; position: relative; overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .info-block:hover{ border-color: rgba(0,110,201,0.5); }
+    .info-block-icon{
+      font-size: 1rem; display: block; margin-bottom: 0.4rem; color: #006ec9;
+    }
+    .info-block-label{
+      font-family: "Black Ops One", system-ui; font-size: 0.38rem;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      color: rgba(0,110,201,0.5); margin-bottom: 0.3rem;
+    }
+    .info-block-value{
+      font-family: "Courier New", monospace; font-size: 0.45rem;
+      color: white; line-height: 1.5;
+    }
+    .info-block-sub{
+      font-family: "Courier New", monospace; font-size: 0.38rem;
+      color: rgba(255,255,255,0.25); margin-top: 0.2rem;
+    }
+ 
+    /* ---- PROCESS ---- */
+    #process{
+      padding: 2.5rem 1.5rem; border-bottom: 3px solid #006ec9;
+    }
+    .process-label{
+      font-family: "Black Ops One", system-ui; font-size: 0.45rem;
+      letter-spacing: 0.3em; color: rgba(0,110,201,0.5);
+      text-transform: uppercase; margin-bottom: 0.5rem;
+    }
+    .process-heading{
+      font-family: "Black Ops One", system-ui; font-size: 1.2rem;
+      color: white; text-transform: uppercase; margin-bottom: 1.8rem; line-height: 1;
+    }
+    .process-heading span{ color: #006ec9; }
+    .process-steps{
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 2px; background: rgba(0,110,201,0.15);
+    }
+    @media (max-width: 700px){ .process-steps{ grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 400px){ .process-steps{ grid-template-columns: 1fr; } }
+    .process-step{
+      background: black; padding: 1.2rem 1rem; position: relative;
+      transition: background 0.2s;
+    }
+    .process-step:hover{ background: #00101f; }
+    .step-num{
+      font-family: "Black Ops One", system-ui; font-size: 2rem;
+      color: rgba(0,110,201,0.07); line-height: 1;
+      position: absolute; top: 0.5rem; right: 0.8rem; user-select: none;
+    }
+    .step-icon{ font-size: 1rem; display: block; margin-bottom: 0.5rem; color: #006ec9; }
+    .step-title{
+      font-family: "Black Ops One", system-ui; font-size: 0.6rem;
+      color: white; text-transform: uppercase; margin-bottom: 0.4rem;
+    }
+    .step-desc{
+      font-family: "Courier New", monospace; font-size: 0.4rem;
+      color: rgba(255,255,255,0.3); line-height: 1.6;
+    }
+    .step-connector{
+      position: absolute; right: -1px; top: 50%;
+      transform: translateY(-50%);
+      font-family: "Black Ops One", system-ui; font-size: 0.6rem;
+      color: rgba(0,110,201,0.3); z-index: 1;
+    }
+ 
+    /* ---- FAQ ---- */
+    #faq{
+      border-bottom: 3px solid #006ec9;
+    }
+    .faq-item{
+      border-bottom: 1px solid rgba(0,110,201,0.15);
+      padding: 1rem 1.5rem; cursor: pointer;
+      transition: background 0.15s;
+    }
+    .faq-item:last-child{ border-bottom: none; }
+    .faq-item:hover{ background: #00060e; }
+    .faq-q{
+      display: flex; justify-content: space-between; align-items: center;
+      font-family: "Black Ops One", system-ui; font-size: 0.55rem;
+      color: white; text-transform: uppercase; letter-spacing: 0.05em;
+    }
+    .faq-arrow{ color: #006ec9; transition: transform 0.2s; font-style: normal; }
+    .faq-item.open .faq-arrow{ transform: rotate(90deg); }
+    .faq-a{
+      font-family: "Courier New", monospace; font-size: 0.42rem;
+      color: rgba(255,255,255,0.3); line-height: 1.7; padding-top: 0.7rem;
+      display: none;
+    }
+    .faq-item.open .faq-a{ display: block; }
+ 
+    /* ---- CTA ---- */
+    #cta{
+      padding: 3rem 1.5rem; text-align: center;
+      position: relative; overflow: hidden;
+    }
+    #cta::before{
+      content: 'JT'; font-family: "Black Ops One", system-ui;
+      font-size: 20rem; color: rgba(0,110,201,0.03);
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none; user-select: none; line-height: 1;
+    }
+    .cta-label{
+      font-family: "Black Ops One", system-ui; font-size: 0.45rem;
+      letter-spacing: 0.3em; color: rgba(0,110,201,0.5);
+      text-transform: uppercase; margin-bottom: 0.8rem;
+    }
+    .cta-heading{
+      font-family: "Black Ops One", system-ui;
+      font-size: clamp(1.5rem, 5vw, 3.5rem); color: white;
+      text-transform: uppercase; line-height: 1; margin-bottom: 1.2rem;
+    }
+    .cta-heading span{ color: #006ec9; }
+ 
+    /* success state */
+    #form-success{
+      display: none; padding: 2rem; text-align: center;
+    }
+    #form-success .success-icon{ font-size: 2rem; display: block; margin-bottom: 0.5rem; }
+    #form-success .success-title{
+      font-family: "Black Ops One", system-ui; font-size: 0.9rem;
+      color: white; text-transform: uppercase; margin-bottom: 0.5rem;
+    }
+    #form-success .success-sub{
+      font-family: "Courier New", monospace; font-size: 0.42rem;
+      color: rgba(255,255,255,0.3); line-height: 1.6;
+    }
+  </style>
+</head>
+<body id="bodey" onload="afterSecoundLoad()">
+  <div id="loading-cover">
+    <img id="loading-logo" class="hidden" src="/index-source/JT-Logo.webp" alt="Logo" onload="afterFirstLoad()">
+  </div>
+
+  <div id="top-shadow"></div>
+  <header>
+    <img id="logo" src="/index-source/JT-Logo-Blue.png" alt="Logo">
+    <h1>JT SOLUTIONS</h1>
+    <img id="menu" src="/index-source/JT-Menu.webp" alt="Menu">
+  </header>
+
+  <main>
+ 
+    <!-- ░░ HERO ░░ -->
+    <section id="hero">
+      <p class="hero-tag">Contact &nbsp;/&nbsp; Get Started &nbsp;/&nbsp; Let's Talk</p>
+      <h2 class="hero-headline">
+        Let's Build
+        <span>Something Real.</span>
+      </h2>
+      <p class="hero-sub">
+        Got a project in mind? Tell us about it. We respond within 24 hours
+        and don't waste your time with unnecessary discovery calls.
+      </p>
+      <div class="hero-cta-row">
+        <button class="btn-ghost" onclick="goto('/work')">View Our Work</button>
+      </div>
+    </section>
+ 
+    <!-- ░░ CONTACT SPLIT ░░ -->
+    <div id="contact-split">
+ 
+      <!-- FORM -->
+      <div id="form-side">
+        <p class="section-label">// Send a Brief</p>
+        <div id="contact-form">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="f-name">Full Name</label>
+              <input type="text" id="f-name" placeholder="John Smith" autocomplete="off">
+            </div>
+            <div class="form-group">
+              <label for="f-email">Email Address</label>
+              <input type="email" id="f-email" placeholder="john@company.com" autocomplete="off">
+            </div>
+            <div class="form-group">
+              <label for="f-company">Company</label>
+              <input type="text" id="f-company" placeholder="Optional" autocomplete="off">
+            </div>
+            <div class="form-group">
+              <label for="f-service">Service Needed</label>
+              <select id="f-service">
+                <option value="" disabled selected>Select one</option>
+                <option>Web Development</option>
+                <option>System Design</option>
+                <option>Database Engineering</option>
+                <option>Digital Strategy</option>
+                <option>Not sure yet</option>
+              </select>
+            </div>
+            <div class="form-group full">
+              <label for="f-message">Project Brief</label>
+              <textarea id="f-message" placeholder="Tell us what you're building, what problem it solves, and any constraints we should know about..."></textarea>
+            </div>
+          </div>
+          <div class="form-submit">
+            <span class="form-note">We reply within 24 hours — usually much faster.</span>
+            <button class="btn-primary" id="submit-btn">Send Brief</button>
+          </div>
+        </div>
+        <div id="form-success">
+          <span class="success-icon">◈</span>
+          <p class="success-title">Brief Received</p>
+          <p class="success-sub">We'll get back to you within 24 hours.<br>In the meantime, take a look at our work.</p>
+        </div>
+      </div>
+ 
+      <!-- INFO -->
+      <div id="info-side">
+        <p class="section-label">// Direct Lines</p>
+ 
+        <div class="info-block">
+          <span class="info-block-icon">◉</span>
+          <p class="info-block-label">Email</p>
+          <p class="info-block-value">hello@jtsolutions.hu</p>
+          <p class="info-block-sub">For general enquiries</p>
+        </div>
+ 
+        <div class="info-block">
+          <span class="info-block-icon">◈</span>
+          <p class="info-block-label">Response Time</p>
+          <p class="info-block-value">Under 24 Hours</p>
+          <p class="info-block-sub">Mon – Fri, 9:00 – 18:00 CET</p>
+        </div>
+ 
+        <div class="info-block">
+          <span class="info-block-icon">◧</span>
+          <p class="info-block-label">Location</p>
+          <p class="info-block-value">Budapest, Hungary</p>
+          <p class="info-block-sub">Available for remote &amp; on-site work</p>
+        </div>
+ 
+        <div class="info-block">
+          <span class="info-block-icon">◫</span>
+          <p class="info-block-label">Availability</p>
+          <p class="info-block-value">Open for Projects</p>
+          <p class="info-block-sub">Next slot: Q3 2025</p>
+        </div>
+      </div>
+ 
+    </div>
+ 
+    <!-- ░░ PROCESS ░░ -->
+    <section id="process">
+      <p class="process-label">// How It Works</p>
+      <h2 class="process-heading">From Brief<br><span>To Launch.</span></h2>
+      <div class="process-steps">
+        <div class="process-step">
+          <span class="step-num">01</span>
+          <span class="step-icon">◈</span>
+          <h3 class="step-title">Discovery</h3>
+          <p class="step-desc">We read your brief, ask the right questions, and define scope before touching any code.</p>
+        </div>
+        <div class="process-step">
+          <span class="step-num">02</span>
+          <span class="step-icon">◉</span>
+          <h3 class="step-title">Strategy</h3>
+          <p class="step-desc">Architecture decisions, tech stack selection, timeline, and milestone agreement — all in writing.</p>
+        </div>
+        <div class="process-step">
+          <span class="step-num">03</span>
+          <span class="step-icon">◧</span>
+          <h3 class="step-title">Build</h3>
+          <p class="step-desc">We build in focused sprints with regular check-ins. No disappearing acts, no surprise pivots.</p>
+        </div>
+        <div class="process-step">
+          <span class="step-num">04</span>
+          <span class="step-icon">◫</span>
+          <h3 class="step-title">Launch</h3>
+          <p class="step-desc">Deployment, handover docs, and 30 days of post-launch support included as standard.</p>
+        </div>
+      </div>
+    </section>
+ 
+    <!-- ░░ FAQ ░░ -->
+    <div id="faq">
+      <div class="faq-item">
+        <div class="faq-q">
+          <span>How long does a typical project take?</span>
+          <em class="faq-arrow">›</em>
+        </div>
+        <p class="faq-a">It depends on scope. A landing page or small web app typically takes 2–4 weeks. A full platform with backend, database design, and custom admin can run 8–16 weeks. We'll give you a firm estimate after the discovery phase — no vague ranges.</p>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">
+          <span>Do you work with clients outside Hungary?</span>
+          <em class="faq-arrow">›</em>
+        </div>
+        <p class="faq-a">Yes — the majority of our work is remote. We've worked with clients across Europe and beyond. Time zones and language are rarely an issue; all project communication is in English.</p>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">
+          <span>What happens after launch?</span>
+          <em class="faq-arrow">›</em>
+        </div>
+        <p class="faq-a">Every project includes 30 days of post-launch support. Beyond that, we offer retainer arrangements for ongoing maintenance, feature development, and monitoring. We don't disappear after delivery.</p>
+      </div>
+    </div>
+ 
+    <!-- ░░ CTA ░░ -->
+    <section id="cta">
+      <p class="cta-label">// Browse First</p>
+      <h2 class="cta-heading">See What<br><span>We've Built.</span></h2>
+      <button class="btn-primary" onclick="goto('/work')">View Work</button>
+    </section>
+ 
+  </main>
+
+  <script>
+    let loaded = false;
+
+    function goToMain() {
+      document.getElementById("loading-logo").classList.replace("show","hidden");
+      setTimeout(function(){
+        document.getElementById("loading-cover").classList.add("hidden");
+        document.getElementById("bodey").style.overflow = "auto"
+      }, 1000);
+    }
+
+    function afterFirstLoad() {
+      setTimeout(function(){
+        document.getElementById("loading-logo").classList.replace("hidden","show");
+
+        setTimeout(function(){
+          if (loaded == true) {
+            goToMain()
+          } else {
+            setTimeout(function(){
+              goToMain()
+            }, 2000);
+          }
+        }, 2000);
+      }, 1000);
+    }
+    function afterSecoundLoad() {
+      loaded = true;
+    }
+
+    function goto(URL) {
+      document.getElementById("bodey").style.overflow = "hidden";
+      document.getElementById("loading-cover").classList.replace("hidden","show");
+      setTimeout(function(){
+        window.location.href = URL;
+      }, 2500);
+    }
+  </script>
+</body>
+</html>

@@ -77,6 +77,7 @@
     .hidden{
       opacity: 0%;
       transition: opacity 1s;
+      pointer-events: none;
     }
     .show{
       opacity: 100%;
@@ -423,14 +424,14 @@
 </head>
 <body id="bodey" onload="afterSecoundLoad()">
   <div id="loading-cover">
-    <img id="loading-logo" class="hidden" src="index-source/JT-Logo.webp" alt="Logo" onload="afterFirstLoad()">
+    <img id="loading-logo" class="hidden" src="/index-source/JT-Logo.webp" alt="Logo" onload="afterFirstLoad()">
   </div>
 
   <div id="top-shadow"></div>
   <header>
-    <img id="logo" src="index-source/JT-Logo-Blue.png" alt="Logo">
+    <img id="logo" src="/index-source/JT-Logo-Blue.png" alt="Logo">
     <h1>JT SOLUTIONS</h1>
-    <img id="menu" src="index-source/JT-Menu.webp" alt="Menu">
+    <img id="menu" src="/index-source/JT-Menu.webp" alt="Menu">
   </header>
 
   <main>
@@ -454,8 +455,8 @@
         that refuse to compromise. No bloat. No guesswork. Just results.
       </p>
       <div class="hero-cta-row">
-        <button class="btn-primary">Get In Touch</button>
-        <button class="btn-ghost">View Work</button>
+        <button class="btn-primary" onclick="goto('/contact')">Get In Touch</button>
+        <button class="btn-ghost" onclick="goto('/work')">View Work</button>
       </div>
     </section>
 
@@ -546,7 +547,7 @@
       <div class="ai-badge">AI Generated Content</div>
       <p class="cta-label">// Let's Talk</p>
       <h2 class="cta-heading">Ready to<br><span>Start Something?</span></h2>
-      <button class="btn-primary">Contact Us</button>
+      <button class="btn-primary" onclick="goto('/contact')">Contact Us</button>
     </section>
 
   </main>
@@ -579,6 +580,14 @@
     }
     function afterSecoundLoad() {
       loaded = true;
+    }
+
+    function goto(URL) {
+      document.getElementById("bodey").style.overflow = "hidden";
+      document.getElementById("loading-cover").classList.replace("hidden","show");
+      setTimeout(function(){
+        window.location.href = URL;
+      }, 2500);
     }
   </script>
 </body>
